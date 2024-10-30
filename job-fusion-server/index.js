@@ -11,7 +11,7 @@ const corsOptions = {
     origin: [
         'http://localhost:5173',
         'http://localhost:5174',
-        'https://job-fusion-shakhawat.web.app/',
+        'https://job-fusion-shakhawat.web.app'
     ],
     credentials: true,
     optionSuccessStatus: 200,
