@@ -4,12 +4,14 @@ import 'react-tabs/style/react-tabs.css';
 import JobCard from '../../components/JobCard';
 import './Home.css'
 import axios from 'axios'
+import useAxiosPublic from '../../hooks/useAxiosPublic';
 
 const Categories = () => {
     const [jobs, setJobs] = useState([])
+    const axiosPublic = useAxiosPublic()
     useEffect(() =>{
         const loadData = async() =>{
-            const {data} =  await axios.get('http://localhost:5000/jobs')
+            const {data} =  await axiosPublic.get('/jobs')
             setJobs(data)
         }
         loadData()

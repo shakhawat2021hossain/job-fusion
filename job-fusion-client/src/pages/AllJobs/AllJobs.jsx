@@ -11,6 +11,7 @@ const AllJobs = () => {
     const [filter, setFilter] = useState('')
     const [sort, setSort] = useState('')
     const [search, setSearch] = useState('')
+    const [searchText, setSearchText] = useState('')
 
     const axiosPublic = useAxiosPublic()
     useEffect(() => {
@@ -18,19 +19,19 @@ const AllJobs = () => {
             const { data } = await axiosPublic.get(`/all-jobs?page=${currentPage}&size=${itemsPerPage}&filter=${filter}&sort=${sort}&search=${search}`)
             setJobs(data)
             // setCount(data.length)
-            console.log(data.length);
+            // console.log(data.length);
         }
         loadData()
-    }, [currentPage, filter, sort])
+    }, [currentPage, filter, sort, search])
 
     useEffect(() => {
         const loadData = async () => {
-            const { data } = await axiosPublic.get(`/count-jobs?filter=${filter}`)
+            const { data } = await axiosPublic.get(`/count-jobs?filter=${filter}&search=${search}`)
             // console.log(data);
             setCount(data.count)
         }
         loadData()
-    }, [filter])
+    }, [filter, search])
 
 
     const totalPages = Math.ceil(count / itemsPerPage)
@@ -45,12 +46,13 @@ const AllJobs = () => {
     const handleReset = () =>{
         setFilter('')
         setSort('')
+        setSearch('')
+        setSearchText('')
     }
 
     const handleSearch = (e) =>{
         e.preventDefault()
-        const search = e.target.search.value
-        setSearch(search);
+        setSearch(searchText);
     }
 
     return (
@@ -81,6 +83,8 @@ const AllJobs = () => {
                                 className='px-6 py-2 text-gray-700 placeholder-gray-500 bg-white outline-none focus:placeholder-transparent'
                                 type='text'
                                 name='search'
+                                onChange={e => setSearchText(e.target.value)}
+                                value={searchText}
                                 placeholder='Enter Job Title'
                                 aria-label='Enter Job Title'
                             />

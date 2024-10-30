@@ -11,7 +11,7 @@ const corsOptions = {
     origin: [
         'http://localhost:5173',
         'http://localhost:5174',
-        'https://solosphere.web.app',
+        'https://job-fusion-shakhawat.web.app/',
     ],
     credentials: true,
     optionSuccessStatus: 200,
@@ -42,7 +42,7 @@ app.get('/', (req, res) => {
 })
 
 
-const uri = "mongodb+srv://jobfusion:asdf1234@cluster0.28i6f.mongodb.net/?retryWrites=true&w=majority&appName=Cluster0";
+const uri = `mongodb+srv://${process.env.DB_USER}:${process.env.DB_PASS}@cluster0.28i6f.mongodb.net/?retryWrites=true&w=majority&appName=Cluster0`;
 
 // Create a MongoClient with a MongoClientOptions object to set the Stable API version
 const client = new MongoClient(uri, {
@@ -114,8 +114,8 @@ app.get('/jobs/:email', verifyToken, async (req, res) => {
     // console.log(tokenData);
     const tokenEmail = tokenData.email
     const email = req.params.email
-    if (tokenEmail !== email) return res.status(403).send({message: "forbidden access"})
-    
+    if (tokenEmail !== email) return res.status(403).send({ message: "forbidden access" })
+
     const query = { 'recruiter.email': email }
     const result = await jobsCollection.find(query).toArray()
     res.send(result)
@@ -152,8 +152,8 @@ app.post('/bids', async (req, res) => {
         jobId: bid.jobId
     }
     const appliedJob = await bidsCollection.findOne(query)
-    if(appliedJob){
-        return res.status(400).send({message: "you are already applied for the job"})
+    if (appliedJob) {
+        return res.status(400).send({ message: "you are already applied for the job" })
     }
     const result = await bidsCollection.insertOne(bid)
     res.send(result);
@@ -184,30 +184,36 @@ app.patch('/update-status/:id', async (req, res) => {
     res.send(result)
 })
 
- 
-//filtering 
+
+// filtering 
 app.get('/count-jobs', async (req, res) => {
+    const search = req.query.search
+
     const filter = req.query.filter
-    console.log(filter);
-    let query = {}
-    if(filter) query = {category: filter}
+    let query = {
+        title: { $regex: search, $options: 'i' }
+    }
+    if (filter) query.category = filter
+
     const count = await jobsCollection.countDocuments(query)
-    res.send({count})
+    res.send({ count })
 })
 app.get('/all-jobs', async (req, res) => {
     const size = parseInt(req.query.size)
     const page = parseInt(req.query.page) - 1
+    const search = req.query.search
 
     const filter = req.query.filter
-    let query = {}
-    if(filter) query = {category: filter}
+    let query = {
+        title: { $regex: search, $options: 'i' }
+    }
+    if (filter) query.category = filter
 
     const sort = req.query.sort
     let opt = {}
-    if(sort) opt = {sort: {deadline: sort === 'asc' ? 1 : -1 }}
+    if (sort) opt = { sort: { deadline: sort === 'asc' ? 1 : -1 } }
 
-    const search = req.query.search
-    
+
     const result = await jobsCollection.find(query, opt).skip(page * size).limit(size).toArray()
     res.send(result)
 })
