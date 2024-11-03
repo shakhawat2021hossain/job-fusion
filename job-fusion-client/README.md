@@ -26,10 +26,10 @@ Job Fusion is a full-stack job and project platform built with the MERN stack, w
 - **React-Hot-Toast:** For user notifications.
 - **date-fns:** For easy date management and formatting.
 ### Backend
-- **Node.js: Server-side JavaScript runtime.
-- **Express.js: For handling backend API routes.
-- **MongoDB: NoSQL database hosted on MongoDB Atlas.
-- **JWT (JSON Web Tokens): For secure user authentication and authorization.
+- **Node.js:** Server-side JavaScript runtime.
+- **Express.js:** For handling backend API routes.
+- **MongoDB:** NoSQL database hosted on MongoDB Atlas.
+- **JWT (JSON Web Tokens):** For secure user authentication and authorization.
 
 ## Usage
 Once the application is up and running:
