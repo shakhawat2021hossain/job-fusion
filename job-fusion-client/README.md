@@ -5,13 +5,13 @@ Job Fusion is a full-stack job and project platform built with the MERN stack, w
 - Frontend: https://job-fusion-shakhawat.web.app/
 - Backend: https://job-fusion.vercel.app/
 ## Features
-**User Registration & Authentication:** Secure login and registration using Firebase.
-**Job & Project Posting:** Users can post jobs or projects with detailed descriptions.
-**Bidding System:** Users can place bids on projects or job listings.
-**User Profiles:** Users can view their profile, posted items, bids, and bid requests.
-**Data Security:** Data is protected using JWT authentication.
-**Real-Time Data Fetching:** React Query and Axios are used for efficient data fetching and caching.
-**Responsive Design:** User-friendly and accessible on various device sizes.
+- **User Registration & Authentication:** Secure login and registration using Firebase.
+- **Job & Project Posting:** Users can post jobs or projects with detailed descriptions.
+- **Bidding System:** Users can place bids on projects or job listings.
+- **User Profiles:** Users can view their profile, posted items, bids, and bid requests.
+- **Data Security:** Data is protected using JWT authentication.
+- **Real-Time Data Fetching:** React Query and Axios are used for efficient data fetching and caching.
+- **Responsive Design:** User-friendly and accessible on various device sizes.
 ## Technologies Used
 ### Frontend
 - **React JS:** For building a dynamic user interface.
