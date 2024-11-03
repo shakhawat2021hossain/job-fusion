@@ -1,7 +1,7 @@
-Job Fusion
+# Job Fusion
 Job Fusion is a full-stack job and project platform built with the MERN stack, where users can find jobs or projects, post opportunities, and bid on available listings. The platform offers a streamlined experience for job seekers, freelancers, and employers to connect and manage their work or hiring processes.
 
-Table of Contents
+## Table of Contents
 Features
 Technologies Used
 Installation
@@ -9,7 +9,7 @@ Usage
 Folder Structure
 Contributing
 License
-Features
+## Features
 User Registration & Authentication: Secure login and registration using Firebase.
 Job & Project Posting: Users can post jobs or projects with detailed descriptions.
 Bidding System: Users can place bids on projects or job listings.
@@ -17,22 +17,22 @@ User Profiles: Users can view their profile, posted items, bids, and bid request
 Data Security: Data is protected using JWT authentication.
 Real-Time Data Fetching: React Query and Axios are used for efficient data fetching and caching.
 Responsive Design: User-friendly and accessible on various device sizes.
-Technologies Used
-Frontend
+## Technologies Used
+### Frontend
 React JS: For building a dynamic user interface.
 React Router: For managing routes in a single-page application.
 React Query: To handle data fetching and caching.
 Axios: For HTTP requests to the server.
 Firebase: For authentication and user management.
-Backend
+### Backend
 Node.js: Server-side JavaScript runtime.
 Express.js: For handling backend API routes.
 MongoDB: NoSQL database hosted on MongoDB Atlas.
 JWT (JSON Web Tokens): For secure user authentication and authorization.
 Deployment
-Client: Deployed on Vercel.
+Client: Deployed on Firebase.
 Server: Deployed on Vercel.
-Installation
+## Installation
 Prerequisites
 Make sure you have the following installed on your machine:
 
@@ -83,7 +83,7 @@ bash
 Copy code
 cd ../client
 npm start
-Usage
+## Usage
 Once the application is up and running:
 
 Register/Login using Firebase authentication.
@@ -91,7 +91,7 @@ Explore Job Listings: Browse available jobs or projects.
 Post a Job/Project if you’re an employer or project owner.
 Place Bids on jobs or projects that interest you.
 Manage Profile: View bids, posted items, and bid requests in the user profile.
-Folder Structure
+## Folder Structure
 php
 Copy code
 job-fusion/
