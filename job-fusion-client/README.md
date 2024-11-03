@@ -19,6 +19,12 @@ Responsive Design: User-friendly and accessible on various device sizes.
 - React Query: To handle data fetching and caching.
 - Axios: For HTTP requests to the server.
 - Firebase: For authentication and user management.
+- Daisy UI & TailwindCSS: For responsive, modern styling.
+- Meraki UI Components: For additional UI components.
+- Swiper Slider: For interactive image and content sliders.
+- react-tabs: For tabbed interface management.
+- React-Hot-Toast: For user notifications.
+- date-fns: For easy date management and formatting.
 ### Backend
 - Node.js: Server-side JavaScript runtime.
 - Express.js: For handling backend API routes.
