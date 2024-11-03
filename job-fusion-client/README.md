@@ -1,14 +1,9 @@
 # Job Fusion
 Job Fusion is a full-stack job and project platform built with the MERN stack, where users can find jobs or projects, post opportunities, and bid on available listings. The platform offers a streamlined experience for job seekers, freelancers, and employers to connect and manage their work or hiring processes.
 
-## Table of Contents
-Features
-Technologies Used
-Installation
-Usage
-Folder Structure
-Contributing
-License
+## Live Link
+- Frontend: https://job-fusion-shakhawat.web.app/
+- Backend: https://job-fusion.vercel.app/
 ## Features
 User Registration & Authentication: Secure login and registration using Firebase.
 Job & Project Posting: Users can post jobs or projects with detailed descriptions.
