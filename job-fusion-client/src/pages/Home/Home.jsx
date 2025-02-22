@@ -1,8 +1,10 @@
 import React from 'react';
 import Carousel from './Carousel';
 import Categories from './Categories';
-import WhyChoose from '../../components/WhyChoose';
+import WhyChoose from './WhyChoose';
 import Testimonials from './Testimonilas';
+import CallToAction from './CallToAction';
+import FAQsection from './FAQsection';
 
 const Home = () => {
     return (
@@ -11,6 +13,8 @@ const Home = () => {
             <Categories></Categories>
             <WhyChoose/>
             <Testimonials/>
+            <CallToAction/>
+            <FAQsection/>
         </div>
     );
 };

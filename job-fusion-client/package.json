@@ -14,11 +14,13 @@
     "axios": "^1.7.7",
     "date-fns": "^4.1.0",
     "firebase": "^10.14.1",
+    "framer-motion": "^12.4.7",
     "react": "^18.3.1",
     "react-datepicker": "^7.4.0",
     "react-dom": "^18.3.1",
     "react-hook-form": "^7.54.2",
     "react-hot-toast": "^2.4.1",
+    "react-icons": "^5.5.0",
     "react-router-dom": "^6.27.0",
     "react-tabs": "^6.0.2",
     "swiper": "^11.1.14"

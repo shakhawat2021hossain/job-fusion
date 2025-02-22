@@ -1,12 +1,13 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { useContext } from 'react';
 import { Link, NavLink } from 'react-router-dom';
 import { AuthContext } from '../provider/AuthProvider';
 import toast from 'react-hot-toast';
-import { FaBriefcase } from 'react-icons/fa';
+import { FaBars, FaBriefcase, FaTimes } from 'react-icons/fa';
 
 const Navbar = () => {
     const { user, loading, logOut } = useContext(AuthContext);
+    const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
 
     const handleLogout = () => {
         logOut()
@@ -14,6 +15,10 @@ const Navbar = () => {
                 toast.success('Logout Successfully');
             })
             .catch((err) => console.error('Logout Error:', err));
+    };
+
+    const toggleMobileMenu = () => {
+        setIsMobileMenuOpen(!isMobileMenuOpen);
     };
 
     return (
@@ -31,12 +36,12 @@ const Navbar = () => {
                         </NavLink>
                     </div>
 
-                    {/* Navigation Links */}
+                    {/* Desktop Navigation Links */}
                     <div className="hidden md:flex items-center space-x-6">
                         <NavLink
                             to="/"
                             className={({ isActive }) =>
-                                `text-gray-700 hover:text-indigo-600 transition-colors duration-200 ${isActive ? 'text-indigo-600 font-semibold' : ''
+                                `text-gray-700 hover:text-indigo-600 transition-colors duration-200 font-semibold ${isActive ? 'text-indigo-600 font-semibold' : ''
                                 }`
                             }
                         >
@@ -45,7 +50,7 @@ const Navbar = () => {
                         <NavLink
                             to="/jobs"
                             className={({ isActive }) =>
-                                `text-gray-700 hover:text-indigo-600 transition-colors duration-200 ${isActive ? 'text-indigo-600 font-semibold' : ''
+                                `text-gray-700 hover:text-indigo-600 transition-colors duration-200 font-semibold ${isActive ? 'text-indigo-600 font-semibold' : ''
                                 }`
                             }
                         >
@@ -55,7 +60,7 @@ const Navbar = () => {
                             <NavLink
                                 to="/login"
                                 className={({ isActive }) =>
-                                    `text-gray-700 hover:text-indigo-600 transition-colors duration-200 ${isActive ? 'text-indigo-600 font-semibold' : ''
+                                    `text-gray-700 font-semibold hover:text-indigo-600 transition-colors duration-200 ${isActive ? 'text-indigo-600 font-semibold' : ''
                                     }`
                                 }
                             >
@@ -64,9 +69,23 @@ const Navbar = () => {
                         )}
                     </div>
 
-                    {/* User Menu */}
-                    <div className="flex items-center">
-                        {user && !loading ? (
+                    {/* Mobile Menu Toggle Button */}
+                    <div className="md:hidden flex items-center">
+                        <button
+                            onClick={toggleMobileMenu}
+                            className="btn btn-ghost transition duration-400 p-2 focus:outline-none"
+                        >
+                            {isMobileMenuOpen ? (
+                                <FaTimes className="text-gray-700 w-6 h-6" />
+                            ) : (
+                                <FaBars className="text-gray-700 w-6 h-6" />
+                            )}
+                        </button>
+                    </div>
+
+                    {/* User Menu (Desktop) */}
+                    {user && !loading && (
+                        <div className="hidden md:flex items-center">
                             <div className="dropdown dropdown-end">
                                 <div
                                     tabIndex={0}
@@ -84,7 +103,7 @@ const Navbar = () => {
                                 </div>
                                 <ul
                                     tabIndex={0}
-                                    className="menu dropdown-content mt-2 p-2 shadow-lg bg-white rounded-lg w-52 border border-gray-100"
+                                    className="menu dropdown-content mt-2 p-2 shadow-lg bg-white rounded-lg w-52 border border-gray-100 font-semibold"
                                 >
                                     <li>
                                         <Link
@@ -128,13 +147,87 @@ const Navbar = () => {
                                     </li>
                                 </ul>
                             </div>
-                        ) : (
-                            <div className="md:hidden">
-                                {/* Mobile Menu Button (optional, see below) */}
-                            </div>
-                        )}
-                    </div>
+                        </div>
+                    )}
                 </div>
+
+                {/* Mobile Menu (Dropdown) */}
+                {isMobileMenuOpen && (
+                    <div className="md:hidden mt-2 pb-4">
+                        <div className="flex flex-col space-y-4">
+                            <NavLink
+                                to="/"
+                                className={({ isActive }) =>
+                                    `text-gray-700 hover:text-indigo-600 transition-colors duration-400 ${isActive ? 'text-indigo-600 font-semibold' : ''
+                                    }`
+                                }
+                                onClick={toggleMobileMenu}
+                            >
+                                Home
+                            </NavLink>
+                            <NavLink
+                                to="/jobs"
+                                className={({ isActive }) =>
+                                    `text-gray-700 hover:text-indigo-600 transition-all duration-400 ${isActive ? 'text-indigo-600 font-semibold' : ''
+                                    }`
+                                }
+                                onClick={toggleMobileMenu}
+                            >
+                                Jobs
+                            </NavLink>
+                            {!user && !loading && (
+                                <NavLink
+                                    to="/login"
+                                    className={({ isActive }) =>
+                                        `text-gray-700 hover:text-indigo-600 transition-colors duration-200 ${isActive ? 'text-indigo-600 font-semibold' : ''
+                                        }`
+                                    }
+                                    onClick={toggleMobileMenu}
+                                >
+                                    Login
+                                </NavLink>
+                            )}
+                            {user && !loading && (
+                                <>
+                                    <Link
+                                        to="/add-job"
+                                        className="text-gray-700 hover:text-indigo-600 transition-all duration-400"
+                                        onClick={toggleMobileMenu}
+                                    >
+                                        Add Job
+                                    </Link>
+                                    <Link
+                                        to="/posted-jobs"
+                                        className="text-gray-700 hover:text-indigo-600 transition-colors duration-200"
+                                        onClick={toggleMobileMenu}
+                                    >
+                                        My Posted Jobs
+                                    </Link>
+                                    <Link
+                                        to="/my-bids"
+                                        className="text-gray-700 hover:text-indigo-600 transition-colors duration-200"
+                                        onClick={toggleMobileMenu}
+                                    >
+                                        My Bids
+                                    </Link>
+                                    <Link
+                                        to="/bid-req"
+                                        className="text-gray-700 hover:text-indigo-600 transition-colors duration-200"
+                                        onClick={toggleMobileMenu}
+                                    >
+                                        Bid Requests
+                                    </Link>
+                                    <button
+                                        onClick={handleLogout}
+                                        className="w-full text-left py-2 px-4 mt-1 bg-indigo-600 text-white hover:bg-indigo-700 rounded-md transition-colors duration-200"
+                                    >
+                                        Logout
+                                    </button>
+                                </>
+                            )}
+                        </div>
+                    </div>
+                )}
             </div>
         </nav>
     );

@@ -2,6 +2,7 @@ import React, { useEffect, useState } from 'react';
 import { Tab, TabList, TabPanel, Tabs } from 'react-tabs';
 import JobCard from '../../components/JobCard';
 import useAxiosPublic from '../../hooks/useAxiosPublic';
+import { motion } from 'framer-motion';
 
 const Categories = () => {
     const [jobs, setJobs] = useState([]);
@@ -19,8 +20,19 @@ const Categories = () => {
     const graphic = jobs.filter((job) => job.category === 'Graphics Design');
     const marketing = jobs.filter((job) => job.category === 'Digital Marketing');
 
+    const sectionVariants = {
+        hidden: { opacity: 0, x: 100 },
+        visible: { opacity: 1, x: 0, transition: { duration: 1 } }
+    };
+
+
     return (
-        <section className="py-16 bg-gray-50">
+        <motion.section
+            variants={sectionVariants}
+            initial="hidden"
+            whileInView="visible"
+            viewport={{ once: false }}
+            className="py-16 bg-gray-50">
             <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
                 <h2 className="text-3xl md:text-4xl font-bold text-gray-800 text-center mb-10">
                     Explore Jobs by Category
@@ -82,7 +94,7 @@ const Categories = () => {
                     </TabPanel>
                 </Tabs>
             </div>
-        </section>
+        </motion.section>
     );
 };
 

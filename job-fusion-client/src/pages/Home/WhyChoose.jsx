@@ -1,7 +1,7 @@
 import React from 'react';
+import { motion } from 'framer-motion';
 
 const WhyChoose = () => {
-    // Sample benefits data
     const benefits = [
         {
             id: 1,
@@ -23,17 +23,40 @@ const WhyChoose = () => {
         },
     ];
 
+    const containerVariants = {
+        hidden: { opacity: 0 },
+        visible: {
+            opacity: 1,
+            transition: {
+                staggerChildren: 0.3,
+            },
+        },
+    };
+
+    const cardVariants = {
+        hidden: { opacity: 0, y: 50 },
+        visible: { opacity: 1, y: 0, transition: { duration: 0.5 } },
+    };
+
     return (
         <section className="py-16 bg-gray-100">
             <div className="max-w-7xl mx-auto px-4">
                 <h2 className="text-3xl md:text-4xl font-bold text-center text-gray-800 mb-12">
                     Why Choose Job Fusion?
                 </h2>
-                <div className="grid grid-cols-1 md:grid-cols-3 gap-10">
+                <motion.div className="grid grid-cols-1 md:grid-cols-3 gap-10"
+                variants={containerVariants}
+                initial="hidden"
+                whileInView="visible"
+                viewport={{ once: false }} 
+                >
                     {benefits.map((benefit) => (
-                        <div
+                        <motion.div
                             key={benefit.id}
                             className="text-center p-6 bg-gray-50 rounded-lg shadow-lg hover:scale-110 transition duration-300"
+                            variants={cardVariants}
+                            whileHover={{ scale: 1.05 }}
+                            viewport={{ once: false }}
                         >
                             <div className="flex justify-center mb-4">
                                 <svg
@@ -57,9 +80,9 @@ const WhyChoose = () => {
                             <p className="text-gray-600">
                                 {benefit.description}
                             </p>
-                        </div>
+                        </motion.div>
                     ))}
-                </div>
+                </motion.div>
             </div>
         </section>
     );
