@@ -5,183 +5,160 @@ import JobCard from '../../components/JobCard';
 import Loading from '../../components/Loading';
 
 const AllJobs = () => {
-    const axiosPublic = useAxiosPublic()
+    const axiosPublic = useAxiosPublic();
 
-    const [search, setSearch] = useState("")
-    const [sort, setSort] = useState("")
-    const [filter, setFilter] = useState("")
-
-    const [count, setCount] = useState(0)
-    const [itemsPerPage, setItemsPerPage] = useState(8)
-    const [currentPage, setCurrentPage] = useState(1)
+    const [search, setSearch] = useState('');
+    const [sort, setSort] = useState('');
+    const [filter, setFilter] = useState('');
+    const [count, setCount] = useState(0);
+    const [itemsPerPage, setItemsPerPage] = useState(8);
+    const [currentPage, setCurrentPage] = useState(1);
 
     const { data: jobs = [], refetch, isLoading, isFetching } = useQuery({
         queryKey: ['jobs', search, sort, filter, currentPage],
         queryFn: async () => {
-            const { data } = await axiosPublic.get(`/all-jobs?page=${currentPage}&size=${itemsPerPage}&search=${search}&sort=${sort}&filter=${filter}`)
-            return data
-        }
-    })
-
+            const { data } = await axiosPublic.get(
+                `/all-jobs?page=${currentPage}&size=${itemsPerPage}&search=${search}&sort=${sort}&filter=${filter}`
+            );
+            return data;
+        },
+    });
 
     useEffect(() => {
         const loadData = async () => {
-            const { data } = await axiosPublic.get(`/count-jobs?search=${search}&filter=${filter}`)
-            // console.log(data);
-            setCount(data.count)
-        }
-        loadData()
-    }, [filter, search])
+            const { data } = await axiosPublic.get(`/count-jobs?search=${search}&filter=${filter}`);
+            setCount(data.count);
+        };
+        loadData();
+    }, [filter, search, axiosPublic]);
 
-    const totalP = Math.ceil(count / itemsPerPage)
-    // console.log(totalP);
-    const pages = [...Array(totalP).keys()].map(ele => ele + 1)
-    // console.log(pages);
+    const totalP = Math.ceil(count / itemsPerPage);
+    const pages = [...Array(totalP).keys()].map((ele) => ele + 1);
 
     const handlePagination = (page) => {
-        setCurrentPage(page)
+        setCurrentPage(page);
+    };
 
-    }
-
-
-    const handleSearch = e => {
-        e.preventDefault()
-        setSearch(e.target.search.value)
-        setCurrentPage(1)
-        e.target.reset()
-    }
+    const handleSearch = (e) => {
+        e.preventDefault();
+        setSearch(e.target.search.value);
+        setCurrentPage(1);
+        e.target.reset();
+    };
 
     const handleReset = () => {
-        setFilter("")
-        setSort("")
-        setSearch("")
-        setCurrentPage(1)
-    }
-
+        setFilter('');
+        setSort('');
+        setSearch('');
+        setCurrentPage(1);
+    };
 
     return (
-        <div className='px-6 py-10 min-h-[calc(100vh-306px)] flex flex-col justify-between max-w-7xl mx-auto'>
-            <div>
-                <div className='flex flex-col md:flex-row justify-center items-center gap-5 '>
-                    <div>
-                        <select
-                            onChange={
-                                e => setFilter(e.target.value)
-                            }
-                            value={filter}
-                            name='category'
-                            id='category'
-                            className='border p-4 rounded-lg'
+        <section className="py-12 bg-gray-50 min-h-screen">
+            <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+                {/* Filters and Search */}
+                <div className="flex flex-col md:flex-row justify-center items-center gap-4 mb-10">
+                    <select
+                        onChange={(e) => setFilter(e.target.value)}
+                        value={filter}
+                        name="category"
+                        id="category"
+                        className="w-full md:w-auto bg-white border border-gray-300 rounded-lg p-3 text-gray-700 focus:ring-indigo-500 focus:border-indigo-500"
+                    >
+                        <option value="">Filter By Category</option>
+                        <option value="Web Development">Web Development</option>
+                        <option value="Graphics Design">Graphics Design</option>
+                        <option value="Digital Marketing">Digital Marketing</option>
+                    </select>
+
+                    <form onSubmit={handleSearch} className="w-full md:w-auto flex">
+                        <input
+                            type="text"
+                            name="search"
+                            id="search"
+                            placeholder="Enter Job Title"
+                            className="w-full md:w-64 px-4 py-3 border border-gray-300 rounded-l-lg text-gray-700 focus:ring-indigo-500 focus:border-indigo-500 outline-none"
+                        />
+                        <button
+                            type="submit"
+                            className="px-4 py-3 bg-indigo-600 text-white rounded-r-lg hover:bg-indigo-700 transition-colors duration-300"
                         >
-                            <option value=''>Filter By Category</option>
-                            <option value='Web Development'>Web Development</option>
-                            <option value='Graphics Design'>Graphics Design</option>
-                            <option value='Digital Marketing'>Digital Marketing</option>
-                        </select>
-                    </div>
-
-                    <form onSubmit={handleSearch}>
-                        <div className='flex p-1 overflow-hidden border rounded-lg    focus-within:ring focus-within:ring-opacity-40 focus-within:border-blue-400 focus-within:ring-blue-300'>
-                            <input
-                                className='px-6 py-2 text-gray-700 placeholder-gray-500 bg-white outline-none focus:placeholder-transparent'
-                                type='text'
-                                name='search'
-                                id='search'
-                                placeholder='Enter Job Title'
-                                aria-label='Enter Job Title'
-                            />
-
-                            <button className='px-1 md:px-4 py-3 text-sm font-medium tracking-wider text-gray-100 uppercase transition-colors duration-300 transform bg-gray-700 rounded-md hover:bg-gray-600 focus:bg-gray-600 focus:outline-none'>
-                                Search
-                            </button>
-                        </div>
+                            Search
+                        </button>
                     </form>
-                    <div>
-                        <select
-                            onChange={
-                                e => setSort(e.target.value)
-                            }
-                            value={sort}
-                            name='category'
-                            id='category'
-                            className='border p-4 rounded-md'
-                        >
-                            <option value=''>Sort By Deadline</option>
-                            <option value='dsc'>Descending Order</option>
-                            <option value='asc'>Ascending Order</option>
-                        </select>
-                    </div>
-                    <button onClick={handleReset} className='btn'>Reset</button>
+
+                    <select
+                        onChange={(e) => setSort(e.target.value)}
+                        value={sort}
+                        name="sort"
+                        id="sort"
+                        className="w-full md:w-auto bg-white border border-gray-300 rounded-lg p-3 text-gray-700 focus:ring-indigo-500 focus:border-indigo-500"
+                    >
+                        <option value="">Sort By Deadline</option>
+                        <option value="dsc">Descending Order</option>
+                        <option value="asc">Ascending Order</option>
+                    </select>
+
+                    <button
+                        onClick={handleReset}
+                        className="w-full md:w-auto px-6 py-3 bg-gray-200 text-gray-700 rounded-lg hover:bg-gray-300 transition-colors duration-300"
+                    >
+                        Reset
+                    </button>
                 </div>
-                <div className='md:min-h-[450px]'>
+
+                {/* Jobs Grid */}
+                <div className="min-h-[450px]">
                     {isFetching || isLoading ? (
-                        <div className='flex items-center justify-center h-full'>
+                        <div className="flex items-center justify-center h-full">
                             <Loading />
                         </div>
+                    ) : jobs.length === 0 ? (
+                        <p className="text-center text-gray-500 mt-10">No jobs found matching your criteria.</p>
                     ) : (
-                        <div className='grid grid-cols-1 gap-8 mt-8 xl:mt-16 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4'>
-                            {jobs.map(job => (
+                        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 mt-8">
+                            {jobs.map((job) => (
                                 <JobCard key={job._id} job={job} />
                             ))}
                         </div>
                     )}
                 </div>
-            </div>
 
-            <div className='flex justify-center mt-12'>
-                <button onClick={() => setCurrentPage(currentPage - 1)} disabled={currentPage == 1} className='px-4 py-2 mx-1 text-gray-700 disabled:text-gray-500 capitalize bg-gray-200 rounded-md disabled:cursor-not-allowed disabled:hover:bg-gray-200 disabled:hover:text-gray-500 hover:bg-blue-500  hover:text-white'>
-                    <div className='flex items-center -mx-1'>
-                        <svg
-                            xmlns='http://www.w3.org/2000/svg'
-                            className='w-6 h-6 mx-1 rtl:-scale-x-100'
-                            fill='none'
-                            viewBox='0 0 24 24'
-                            stroke='currentColor'
+                {/* Pagination */}
+                {totalP > 1 && (
+                    <div className="flex justify-center items-center gap-2 mt-12">
+                        <button
+                            onClick={() => setCurrentPage(currentPage - 1)}
+                            disabled={currentPage === 1}
+                            className="px-4 py-2 text-gray-700 bg-gray-200 rounded-lg hover:bg-indigo-600 hover:text-white disabled:bg-gray-200 disabled:text-gray-400 disabled:cursor-not-allowed transition-colors duration-300"
                         >
-                            <path
-                                strokeLinecap='round'
-                                strokeLinejoin='round'
-                                strokeWidth='2'
-                                d='M7 16l-4-4m0 0l4-4m-4 4h18'
-                            />
-                        </svg>
+                            Prev
+                        </button>
 
-                        <span className='mx-1'>previous</span>
-                    </div>
-                </button>
+                        {pages.map((btnNum) => (
+                            <button
+                                key={btnNum}
+                                onClick={() => handlePagination(btnNum)}
+                                className={`px-4 py-2 rounded-lg transition-colors duration-300 ${currentPage === btnNum
+                                        ? 'bg-indigo-600 text-white'
+                                        : 'bg-gray-200 text-gray-700 hover:bg-indigo-600 hover:text-white'
+                                    }`}
+                            >
+                                {btnNum}
+                            </button>
+                        ))}
 
-                {pages.map(btnNum => (
-                    <button
-                        onClick={() => handlePagination(btnNum)}
-                        key={btnNum}
-                        className={`${currentPage === btnNum && 'bg-blue-500 text-white'} hidden px-4 py-2 mx-1 transition-colors duration-300 transform  rounded-md sm:inline hover:bg-blue-500  hover:text-white`}
-                    >
-                        {btnNum}
-                    </button>
-                ))}
-
-                <button onClick={() => setCurrentPage(currentPage + 1)} disabled={currentPage == totalP} className='px-4 py-2 mx-1 text-gray-700 transition-colors duration-300 transform bg-gray-200 rounded-md hover:bg-blue-500 disabled:hover:bg-gray-200 disabled:hover:text-gray-500 hover:text-white disabled:cursor-not-allowed disabled:text-gray-500'>
-                    <div className='flex items-center -mx-1'>
-                        <span className='mx-1'>Next</span>
-
-                        <svg
-                            xmlns='http://www.w3.org/2000/svg'
-                            className='w-6 h-6 mx-1 rtl:-scale-x-100'
-                            fill='none'
-                            viewBox='0 0 24 24'
-                            stroke='currentColor'
+                        <button
+                            onClick={() => setCurrentPage(currentPage + 1)}
+                            disabled={currentPage === totalP}
+                            className="px-4 py-2 text-gray-700 bg-gray-200 rounded-lg hover:bg-indigo-600 hover:text-white disabled:bg-gray-200 disabled:text-gray-400 disabled:cursor-not-allowed transition-colors duration-300"
                         >
-                            <path
-                                strokeLinecap='round'
-                                strokeLinejoin='round'
-                                strokeWidth='2'
-                                d='M17 8l4 4m0 0l-4 4m4-4H3'
-                            />
-                        </svg>
+                            Next
+                        </button>
                     </div>
-                </button>
+                )}
             </div>
-        </div>
+        </section>
     );
 };
 
