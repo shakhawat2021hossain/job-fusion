@@ -5,10 +5,11 @@ import { AuthContext } from "../../provider/AuthProvider";
 import toast from "react-hot-toast";
 import SocialLogin from "../../components/SocialLogin";
 import useAxiosPublic from '../../hooks/useAxiosPublic';
+import { ImSpinner9 } from 'react-icons/im';
 
 const Login = () => {
     const axiosPublic = useAxiosPublic()
-    const { login, user, loading } = useContext(AuthContext);
+    const { login, user, loading, setLoading } = useContext(AuthContext);
     const navigate = useNavigate()
 
     const location = useLocation()
@@ -28,19 +29,25 @@ const Login = () => {
         const password = e.target.password.value
         // console.log(email, password);
         try {
-            const result = login(email, password)
+            const result = await login(email, password)
+            console.log(result);
             const { data } = await axiosPublic.post('/jwt', { email }, { withCredentials: true })
             console.log(data);
             toast.success("Login Successfully")
             navigate(from || '/', { replace: true })
         }
         catch (err) {
-            console.log(err);
+            // console.log(err);
+            toast.error(`Failed: ${err?.message || "Something went wrong"}`)
+        }
+        finally {
+            setLoading(false);
         }
 
     }
 
-    if (user || loading) return
+    if (user) return
+
     return (
         <div className="flex min-h-screen items-center justify-center bg-gray-100">
             {/* Container for the form */}
@@ -79,11 +86,9 @@ const Login = () => {
 
                             {/* Sign In Button */}
                             <div>
-                                <input
-                                    type="submit"
-                                    value="Login"
-                                    className="w-full py-2 px-4 bg-blue-600 text-white rounded-md shadow hover:bg-blue-700"
-                                />
+                                <button type='submit' className="w-full py-2 px-4 bg-blue-600 text-white rounded-md shadow hover:bg-blue-700">
+                                    {loading ? <ImSpinner9 className='animate-spin m-auto' /> : "Login"}
+                                </button>
                             </div>
                         </form>
 

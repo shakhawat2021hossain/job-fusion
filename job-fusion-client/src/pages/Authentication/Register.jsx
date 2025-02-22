@@ -1,13 +1,13 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import { useContext } from "react";
 import { Link, useLocation, useNavigate } from "react-router-dom";
-import { AuthContext } from "../../provider/AuthProvider"; // Import Firebase and Google provider
-import { signInWithPopup } from "firebase/auth";
+import { AuthContext } from "../../provider/AuthProvider";
 import toast from "react-hot-toast";
 import SocialLogin from "../../components/SocialLogin";
+import { ImSpinner9 } from 'react-icons/im';
 
 const Register = () => {
-    const { register, updateUserProfile, setUser, user, loading } = useContext(AuthContext);
+    const { register, updateUserProfile, setUser, user, loading, setLoading } = useContext(AuthContext);
     const navigate = useNavigate();
 
     const location = useLocation()
@@ -17,31 +17,32 @@ const Register = () => {
         if (user) {
             navigate('/')
         }
-    }, [])
+    }, [user, navigate])
 
-    const handleRegister = (e) => {
+    const handleRegister = async (e) => {
         e.preventDefault();
         const name = e.target.name.value;
         const photo = e.target.photo.value;
         const email = e.target.email.value;
         const password = e.target.password.value;
-        register(email, password)
-            .then((res) => {
-                const user = res.user
-                updateUserProfile(name, photo, user)
-                .then(() => {
-                    console.log("name photo updated")
-                    setUser({...user, photoURL: photo, dispalyName: name})
-                })
-                .catch(err => console.log(err))
-                toast.success("Registered Successfully");
-                navigate(from || '/');
+        try {
+            const res = await register(email, password);
+            const user = res.user;
 
-            })
-            .catch((err) => console.log(err));
+            await updateUserProfile(name, photo, user);
+            setUser({ ...user, photoURL: photo, displayName: name });
+            toast.success("Registered Successfully");
+            navigate(from || '/');
+        }
+        catch (err) {
+            toast.error("Failed: ",err?.code || err?.message)
+            // navigate('/login');
+            setLoading(false)
+        }
     };
 
-    if(user || loading) return
+    if (user) return
+    // if(loading) return <Loading/>
 
 
     return (
@@ -63,6 +64,7 @@ const Register = () => {
                                     className="mt-1 block w-full px-4 py-2 border border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500"
                                     placeholder="John Cena"
                                     id="name"
+                                    name='name'
                                     required
                                 />
                             </div>
@@ -75,6 +77,7 @@ const Register = () => {
                                     className="mt-1 block w-full px-4 py-2 border border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500"
                                     placeholder="https://iamge.jpg"
                                     id="photo"
+                                    name='photo'
                                     required
                                 />
                             </div>
@@ -87,6 +90,7 @@ const Register = () => {
                                     className="mt-1 block w-full px-4 py-2 border border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500"
                                     placeholder="you@example.com"
                                     id="email"
+                                    name='email'
                                     required
                                 />
                             </div>
@@ -99,17 +103,16 @@ const Register = () => {
                                     className="mt-1 block w-full px-4 py-2 border border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500"
                                     placeholder="********"
                                     id="password"
+                                    name='password'
                                     required
                                 />
                             </div>
 
                             {/* Register Button */}
                             <div>
-                                <input
-                                    type="submit"
-                                    value="Register"
-                                    className="w-full py-2 px-4 bg-blue-600 text-white rounded-md shadow hover:bg-blue-700"
-                                />
+                                <button type='submit' className="w-full py-2 px-4 bg-blue-600 text-white rounded-md shadow hover:bg-blue-700">
+                                    {loading ? <ImSpinner9 className='animate-spin m-auto'/> : "Register"}
+                                </button>
                             </div>
                         </form>
 
@@ -127,7 +130,7 @@ const Register = () => {
 
                         {/* Sign Up Option */}
                         <div className="text-center text-gray-600 mt-4">
-                            Already have an account?
+                            Already have an account? 
                             <Link to={'/login'} className="text-blue-600 hover:underline"> Login</Link>
                         </div>
                     </div>

@@ -22,14 +22,14 @@ app.use(cookieParser())
 
 const verifyToken = (req, res, next) => {
     const token = req.cookies?.token;
-    console.log(token);
+    // console.log(token);
     if (!token) return res.status(401).send("unothorized access")
     if (token) {
         jwt.verify(token, process.env.ACCESS_TOKEN_SECRET, (err, decoded) => {
             if (err) {
                 return res.status(401).send("unothorized access")
             }
-            console.log(decoded);
+            // console.log(decoded);
             req.user = decoded;
             next()
         })
@@ -185,37 +185,46 @@ app.patch('/update-status/:id', async (req, res) => {
 })
 
 
-// filtering 
-app.get('/count-jobs', async (req, res) => {
-    const search = req.query.search
+app.get('/all-jobs', async (req, res) => {
+    const page = parseInt(req.query.page) - 1
+    const size = parseInt(req.query.size)
 
-    const filter = req.query.filter
+    // search
+    const search = req.query.search;
     let query = {
-        title: { $regex: search, $options: 'i' }
+        title: {
+            $regex: search,
+            $options: 'i'
+        }
     }
+
+    // sort
+    const sort = req.query.sort;
+    let opt = {}
+    if (sort) opt = { sort: { deadline: sort === 'asc' ? 1 : -1 } }
+
+    // filter
+    const filter = req.query.filter;
+    if (filter) query.category = filter
+
+    const result = await jobsCollection.find(query, opt).skip(page * size).limit(size).toArray()
+    res.send(result)
+})
+
+app.get('/count-jobs', async (req, res) => {
+    const search = req.query.search;
+    const query = {
+        title: {
+            $regex: search,
+            $options: 'i'
+        }
+    }
+
+    const filter = req.query.filter;
     if (filter) query.category = filter
 
     const count = await jobsCollection.countDocuments(query)
     res.send({ count })
-})
-app.get('/all-jobs', async (req, res) => {
-    const size = parseInt(req.query.size)
-    const page = parseInt(req.query.page) - 1
-    const search = req.query.search
-
-    const filter = req.query.filter
-    let query = {
-        title: { $regex: search, $options: 'i' }
-    }
-    if (filter) query.category = filter
-
-    const sort = req.query.sort
-    let opt = {}
-    if (sort) opt = { sort: { deadline: sort === 'asc' ? 1 : -1 } }
-
-
-    const result = await jobsCollection.find(query, opt).skip(page * size).limit(size).toArray()
-    res.send(result)
 })
 
 app.listen(port, () => {

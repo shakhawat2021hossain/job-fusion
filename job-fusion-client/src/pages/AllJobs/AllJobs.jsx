@@ -1,70 +1,73 @@
-
 import React, { useEffect, useState } from 'react';
 import useAxiosPublic from '../../hooks/useAxiosPublic';
+import { useQuery } from '@tanstack/react-query';
 import JobCard from '../../components/JobCard';
+import Loading from '../../components/Loading';
 
 const AllJobs = () => {
-    const [jobs, setJobs] = useState([])
-    const [itemsPerPage, setItemsPerPage] = useState(8)
-    const [count, setCount] = useState(0)
-    const [currentPage, setCurrentPage] = useState(1)
-    const [filter, setFilter] = useState('')
-    const [sort, setSort] = useState('')
-    const [search, setSearch] = useState('')
-    const [searchText, setSearchText] = useState('')
-
     const axiosPublic = useAxiosPublic()
-    useEffect(() => {
-        const loadData = async () => {
-            const { data } = await axiosPublic.get(`/all-jobs?page=${currentPage}&size=${itemsPerPage}&filter=${filter}&sort=${sort}&search=${search}`)
-            setJobs(data)
-            // setCount(data.length)
-            // console.log(data.length);
+
+    const [search, setSearch] = useState("")
+    const [sort, setSort] = useState("")
+    const [filter, setFilter] = useState("")
+
+    const [count, setCount] = useState(0)
+    const [itemsPerPage, setItemsPerPage] = useState(8)
+    const [currentPage, setCurrentPage] = useState(1)
+
+    const { data: jobs = [], refetch, isLoading, isFetching } = useQuery({
+        queryKey: ['jobs', search, sort, filter, currentPage],
+        queryFn: async () => {
+            const { data } = await axiosPublic.get(`/all-jobs?page=${currentPage}&size=${itemsPerPage}&search=${search}&sort=${sort}&filter=${filter}`)
+            return data
         }
-        loadData()
-    }, [currentPage, filter, sort, search])
+    })
+
 
     useEffect(() => {
         const loadData = async () => {
-            const { data } = await axiosPublic.get(`/count-jobs?filter=${filter}&search=${search}`)
+            const { data } = await axiosPublic.get(`/count-jobs?search=${search}&filter=${filter}`)
             // console.log(data);
             setCount(data.count)
         }
         loadData()
     }, [filter, search])
 
-
-    const totalPages = Math.ceil(count / itemsPerPage)
-    const pages = [...Array(totalPages).keys()].map(element => element + 1)
-    // console.log(totalPages);
+    const totalP = Math.ceil(count / itemsPerPage)
+    // console.log(totalP);
+    const pages = [...Array(totalP).keys()].map(ele => ele + 1)
+    // console.log(pages);
 
     const handlePagination = (page) => {
-        // console.log(page);
         setCurrentPage(page)
+
     }
 
-    const handleReset = () =>{
-        setFilter('')
-        setSort('')
-        setSearch('')
-        setSearchText('')
-    }
 
-    const handleSearch = (e) =>{
+    const handleSearch = e => {
         e.preventDefault()
-        setSearch(searchText);
+        setSearch(e.target.search.value)
+        setCurrentPage(1)
+        e.target.reset()
     }
+
+    const handleReset = () => {
+        setFilter("")
+        setSort("")
+        setSearch("")
+        setCurrentPage(1)
+    }
+
 
     return (
-        <div className='container px-6 py-10 min-h-[calc(100vh-306px)] flex flex-col justify-between max-w-7xl mx-auto'>
+        <div className='px-6 py-10 min-h-[calc(100vh-306px)] flex flex-col justify-between max-w-7xl mx-auto'>
             <div>
                 <div className='flex flex-col md:flex-row justify-center items-center gap-5 '>
                     <div>
                         <select
-                            onChange={e => {
-                                setFilter(e.target.value)
-                                setCurrentPage(1)
-                            }}
+                            onChange={
+                                e => setFilter(e.target.value)
+                            }
                             value={filter}
                             name='category'
                             id='category'
@@ -83,8 +86,7 @@ const AllJobs = () => {
                                 className='px-6 py-2 text-gray-700 placeholder-gray-500 bg-white outline-none focus:placeholder-transparent'
                                 type='text'
                                 name='search'
-                                onChange={e => setSearchText(e.target.value)}
-                                value={searchText}
+                                id='search'
                                 placeholder='Enter Job Title'
                                 aria-label='Enter Job Title'
                             />
@@ -96,10 +98,9 @@ const AllJobs = () => {
                     </form>
                     <div>
                         <select
-                            onChange={e => {
-                                setSort(e.target.value)
-                                setCurrentPage(1)
-                            }}
+                            onChange={
+                                e => setSort(e.target.value)
+                            }
                             value={sort}
                             name='category'
                             id='category'
@@ -112,15 +113,23 @@ const AllJobs = () => {
                     </div>
                     <button onClick={handleReset} className='btn'>Reset</button>
                 </div>
-                <div className='grid grid-cols-1 gap-8 mt-8 xl:mt-16 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4'>
-                    {jobs.map(job => (
-                        <JobCard key={job._id} job={job} />
-                    ))}
+                <div className='md:min-h-[450px]'>
+                    {isFetching || isLoading ? (
+                        <div className='flex items-center justify-center h-full'>
+                            <Loading />
+                        </div>
+                    ) : (
+                        <div className='grid grid-cols-1 gap-8 mt-8 xl:mt-16 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4'>
+                            {jobs.map(job => (
+                                <JobCard key={job._id} job={job} />
+                            ))}
+                        </div>
+                    )}
                 </div>
             </div>
 
             <div className='flex justify-center mt-12'>
-                <button onClick={() => handlePagination(currentPage - 1)} disabled={currentPage === 1} className='px-4 py-2 mx-1 text-gray-700 disabled:text-gray-500 capitalize bg-gray-200 rounded-md disabled:cursor-not-allowed disabled:hover:bg-gray-200 disabled:hover:text-gray-500 hover:bg-blue-500  hover:text-white'>
+                <button onClick={() => setCurrentPage(currentPage - 1)} disabled={currentPage == 1} className='px-4 py-2 mx-1 text-gray-700 disabled:text-gray-500 capitalize bg-gray-200 rounded-md disabled:cursor-not-allowed disabled:hover:bg-gray-200 disabled:hover:text-gray-500 hover:bg-blue-500  hover:text-white'>
                     <div className='flex items-center -mx-1'>
                         <svg
                             xmlns='http://www.w3.org/2000/svg'
@@ -151,7 +160,7 @@ const AllJobs = () => {
                     </button>
                 ))}
 
-                <button onClick={() => handlePagination(currentPage + 1)} disabled={currentPage === totalPages} className='px-4 py-2 mx-1 text-gray-700 transition-colors duration-300 transform bg-gray-200 rounded-md hover:bg-blue-500 disabled:hover:bg-gray-200 disabled:hover:text-gray-500 hover:text-white disabled:cursor-not-allowed disabled:text-gray-500'>
+                <button onClick={() => setCurrentPage(currentPage + 1)} disabled={currentPage == totalP} className='px-4 py-2 mx-1 text-gray-700 transition-colors duration-300 transform bg-gray-200 rounded-md hover:bg-blue-500 disabled:hover:bg-gray-200 disabled:hover:text-gray-500 hover:text-white disabled:cursor-not-allowed disabled:text-gray-500'>
                     <div className='flex items-center -mx-1'>
                         <span className='mx-1'>Next</span>
 
@@ -173,7 +182,7 @@ const AllJobs = () => {
                 </button>
             </div>
         </div>
-    )
-}
+    );
+};
 
-export default AllJobs
+export default AllJobs;

@@ -31,15 +31,18 @@ export default function Carousel() {
                 className="mySwiper rounded-lg"
             >
                 <SwiperSlide>
-                    <Slide image={'/src/assets/banner/banner1.jpg'} text={"Find Best Possibles Job for you"}></Slide>
+                    <Slide image={'/assets/banner/banner1.jpg'} text={"Find Best Possible Jobs for you"}></Slide>
+
                 </SwiperSlide>
                 <SwiperSlide>
-                    <Slide image={'/src/assets/banner/banner2.jpg'} text={"Posts Job and Hire a Pro for fillup you vacancy"}></Slide>
+                    <Slide image={'/assets/banner/banner2.jpg'} text={"Post Jobs and Hire a Pro to fill your vacancy"}></Slide>
+
+
                 </SwiperSlide>
                 <SwiperSlide>
-                    <Slide image={'/src/assets/banner/banner3.jpg'} text={"Easy to use and Secured all of your Data"}></Slide>
+                    <Slide image={'/assets/banner/banner3.jpg'} text={"Easy to use and Secure for all your data"}></Slide>
                 </SwiperSlide>
-        
+
             </Swiper>
         </div>
     );

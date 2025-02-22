@@ -1,14 +1,24 @@
 import React from 'react';
+import { FaBriefcase } from 'react-icons/fa';
+import { NavLink } from 'react-router-dom';
 
 const Footer = () => {
     return (
         <footer className="bg-white dark:bg-gray-900">
             <div className="container flex flex-col items-center justify-between p-6 mx-auto space-y-4 sm:space-y-0 sm:flex-row">
-                <a href="#">
-                    <img className="w-auto h-7" src="https://merakiui.com/images/full-logo.svg" alt="" />
-                </a>
+                <div className=''>
+                    <div className='flex gap-2 items-center'>
+                        <NavLink
+                            to={'/'}
+                            className='flex items-center gap-2 text-2xl font-extrabold tracking-tight text-transparent bg-clip-text bg-gradient-to-r from-blue-500 to-purple-600 hover:from-blue-600 hover:to-purple-700 transition-all duration-300'
+                        >
+                            <FaBriefcase className="text-blue-500" /> {/* Adding a briefcase icon */}
+                            Job Fusion
+                        </NavLink>
+                    </div>
+                </div>
 
-                <p className="text-sm text-gray-600 dark:text-gray-300">© Copyright 2021. All Rights Reserved.</p>
+                <p className="text-sm text-gray-600 dark:text-gray-300">© Copyright {new Date().getFullYear()}. All Rights Reserved.</p>
 
                 <div className="flex -mx-2">
                     <a href="#" className="mx-2 text-gray-600 transition-colors duration-300 dark:text-gray-300 hover:text-blue-500 dark:hover:text-blue-400" aria-label="Reddit">
